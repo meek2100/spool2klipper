@@ -1,0 +1,11 @@
+spool2klipper:
+    build: 
+      context: ./spool2klipper
+    container_name: spool2klipper
+    restart: unless-stopped
+    volumes:
+      # Optional: Mount your specific config if you don't want to use the default
+      - ./spool2klipper.cfg:/home/spoolman/.config/spool2klipper/spool2klipper.cfg:ro
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
