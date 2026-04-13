@@ -8,13 +8,14 @@ RUN groupadd -g ${USER_GID} spoolman && \
 
 WORKDIR /app
 
-# Install dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy source
-COPY spool2klipper.py .
+# Copy project files
+COPY pyproject.toml .
+COPY README.md .
+COPY spool2klipper/ spool2klipper/
 COPY spool2klipper.cfg .
+
+# Install package
+RUN pip install --no-cache-dir .
 
 # Setup config directory
 RUN mkdir -p /home/spoolman/.config/spool2klipper && \
@@ -26,4 +27,4 @@ USER spoolman
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
-ENTRYPOINT [ "python", "spool2klipper.py" ]
+ENTRYPOINT [ "spool2klipper" ]

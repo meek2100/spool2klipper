@@ -1,10 +1,6 @@
 name: Python Tests
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: [push, pull_request]
 
 jobs:
   test:
@@ -21,11 +17,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest pytest-asyncio pytest-mock
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install .[dev]
 
     - name: Run tests with pytest
       run: |
-        # Set a dummy config path so the script doesn't fail on missing files
-        export CONFIG_PATH="./spool2klipper.cfg"
         pytest tests/

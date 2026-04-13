@@ -97,6 +97,12 @@ Copy the the `moonraker-spool2klipper.cfg` file to the same dir as where
 ```
 to Moonraker's config file (moonraker.conf).
 
+## Integrated use with Spoolman2Slicer
+
+*spool2klipper* can be integrated directly into [spoolman2slicer](https://github.com/bofh69/spoolman2slicer) as a plugin. This allows you to run both tools in a single process.
+
+To enable it, run `spoolman2slicer` with the `--with-s2k` flag or set the `S2S_WITH_S2K=true` environment variable. The host will automatically handle the lifecycle and configuration of this agent.
+
 ## See also
 
 This program was made to make it easier to use [spoolman2slicer](https://github.com/bofh69/spoolman2slicer) when not using [nfc2klipper](https://github.com/bofh69/nfc2klipper).

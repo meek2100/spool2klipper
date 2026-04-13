@@ -1,6 +1,6 @@
 spool2klipper:
     build: 
-      context: ./spool2klipper
+      context: .
     container_name: spool2klipper
     restart: unless-stopped
     volumes:
