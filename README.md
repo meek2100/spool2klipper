@@ -22,7 +22,7 @@ and it asks Moonraker to run special gcode macros in Klipper for storing data ab
 In the cloned repository's dir run:
 ```sh
 python3 -m venv venv
-venv/bin/pip3 install -r requirements.txt
+venv/bin/pip3 install .
 ```
 
 <!-- Copy and update the `spool2klipper.cfg` to `~/.config/spool2klipper/spool2klipper.cfg`. -->
@@ -80,6 +80,9 @@ Copy spool2klippper.service to `/etc/systemd/system`, then run:
 sudo systemctl start spool2klipper
 sudo systemctl enable spool2klipper
 ```
+
+> [!NOTE]
+> The systemd service should be updated to point to the `venv/bin/spool2klipper` executable instead of the raw script.
 
 To see its status, run:
 ```sh

@@ -11,7 +11,7 @@ BLACK:=$(VENV)/bin/black
 PYLINT:=$(VENV)/bin/pylint
 REUSE:=$(VENV)/bin/reuse
 
-SRC=$(wildcard *.py lib/*.py)
+SRC=$(wildcard src/**/*.py)
 
 help:
 	@echo Available targets:
@@ -19,10 +19,10 @@ help:
 	@echo lint - check the python files with pylint.
 	@echo clean - remove venv directory.
 
-$(VENV_TIMESTAMP): requirements.txt
+$(VENV_TIMESTAMP): pyproject.toml
 	@echo Building $(VENV)
 	python3 -m venv $(VENV)
-	$(PIP) install -r $<
+	$(PIP) install .
 	touch $@
 
 $(BLACK): $(VENV_TIMESTAMP)
