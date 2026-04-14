@@ -34,12 +34,14 @@ DEFAULT_CFG_FILE = PROGNAME + ".cfg"
 class Spool2Klipper:
     """Moonraker agent to send Spoolman's spool info to Klipper"""
 
-    def __init__(self, 
-                 moonraker_url: str, 
-                 spoolman_url: str,
-                 klipper_spool_set_macro_prefix: str = "_SPOOLMAN_SET_FIELD_",
-                 klipper_spool_clear_macro: str = "_SPOOLMAN_CLEAR_SPOOL",
-                 klipper_spool_done: str = "_SPOOLMAN_DONE"):
+    def __init__(
+        self,
+        moonraker_url: str,
+        spoolman_url: str,
+        klipper_spool_set_macro_prefix: str = "_SPOOLMAN_SET_FIELD_",
+        klipper_spool_clear_macro: str = "_SPOOLMAN_CLEAR_SPOOL",
+        klipper_spool_done: str = "_SPOOLMAN_DONE",
+    ):
         self.gcode_macros: List[str] = []
         self.http_session: Optional[aiohttp.ClientSession] = None
         self.moonraker_server: Optional[Server] = None
@@ -162,14 +164,21 @@ class Spool2Klipper:
         except KeyboardInterrupt:
             logging.info("Interrupted by user")
 
+
 def load_config(args):
     """Load configuration from env vars, config file, or defaults."""
     config = {
-        "moonraker_url": os.getenv("S2K_MOONRAKER_URL", "ws://localhost:7125/websocket"),
-        "spoolman_url": os.getenv("S2K_SPOOLMAN_URL", "http://localhost:7912/api"),
-        "klipper_spool_set_macro_prefix": os.getenv("S2K_SET_MACRO_PREFIX", "_SPOOLMAN_SET_FIELD_"),
-        "klipper_spool_clear_macro": os.getenv("S2K_CLEAR_MACRO", "_SPOOLMAN_CLEAR_SPOOL"),
-        "klipper_spool_done": os.getenv("S2K_DONE_MACRO", "_SPOOLMAN_DONE")
+        "moonraker_url": os.getenv(
+            "S2K_MOONRAKER_URL", "ws://localhost:7125/websocket"
+        ),
+        "spoolman_url": os.getenv("S2K_SPOOLMAN_URL", "http://localhost:8000/api"),
+        "klipper_spool_set_macro_prefix": os.getenv(
+            "S2K_SET_MACRO_PREFIX", "_SPOOLMAN_SET_FIELD_"
+        ),
+        "klipper_spool_clear_macro": os.getenv(
+            "S2K_CLEAR_MACRO", "_SPOOLMAN_CLEAR_SPOOL"
+        ),
+        "klipper_spool_done": os.getenv("S2K_DONE_MACRO", "_SPOOLMAN_DONE"),
     }
 
     # Load from config file if specified or found in default locations
@@ -180,10 +189,12 @@ def load_config(args):
     if cfg_file:
         search_paths.append(cfg_file)
     else:
-        search_paths.extend([
-            os.path.join(os.path.expanduser("~"), DEFAULT_CFG_FILE),
-            os.path.join(DEFAULT_CFG_DIR, DEFAULT_CFG_FILE)
-        ])
+        search_paths.extend(
+            [
+                os.path.join(os.path.expanduser("~"), DEFAULT_CFG_FILE),
+                os.path.join(DEFAULT_CFG_DIR, DEFAULT_CFG_FILE),
+            ]
+        )
 
     for path in search_paths:
         if os.path.exists(path):
@@ -200,43 +211,61 @@ def load_config(args):
     if config_data:
         # Override with file data only if env vars are NOT set
         for key in config:
-            env_key = f"S2K_{key.upper()}".replace("KLIPPER_SPOOL_", "").replace("_MACRO", "")
+            env_key = f"S2K_{key.upper()}".replace("KLIPPER_SPOOL_", "").replace(
+                "_MACRO", ""
+            )
             # This is a bit complex, let's just do it directly for simplicity
             pass
-        
+
         # Simpler: Config file overrides defaults, but Env Vars override everything.
         if "moonraker_url" in config_data and not os.getenv("S2K_MOONRAKER_URL"):
             config["moonraker_url"] = config_data["moonraker_url"]
         if "spoolman_url" in config_data and not os.getenv("S2K_SPOOLMAN_URL"):
             config["spoolman_url"] = config_data["spoolman_url"]
-        if "klipper_spool_set_macro_prefix" in config_data and not os.getenv("S2K_SET_MACRO_PREFIX"):
-            config["klipper_spool_set_macro_prefix"] = config_data["klipper_spool_set_macro_prefix"]
-        if "klipper_spool_clear_macro" in config_data and not os.getenv("S2K_CLEAR_MACRO"):
-            config["klipper_spool_clear_macro"] = config_data["klipper_spool_clear_macro"]
+        if "klipper_spool_set_macro_prefix" in config_data and not os.getenv(
+            "S2K_SET_MACRO_PREFIX"
+        ):
+            config["klipper_spool_set_macro_prefix"] = config_data[
+                "klipper_spool_set_macro_prefix"
+            ]
+        if "klipper_spool_clear_macro" in config_data and not os.getenv(
+            "S2K_CLEAR_MACRO"
+        ):
+            config["klipper_spool_clear_macro"] = config_data[
+                "klipper_spool_clear_macro"
+            ]
         if "klipper_spool_done" in config_data and not os.getenv("S2K_DONE_MACRO"):
             config["klipper_spool_done"] = config_data["klipper_spool_done"]
 
     return config
 
+
 def main():
     parser = argparse.ArgumentParser(description="Moonraker agent for Spoolman")
     parser.add_argument("-c", "--config", help="Path to config file")
-    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose logging")
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", help="Enable verbose logging"
+    )
     args = parser.parse_args()
 
-    log_level = logging.DEBUG if args.verbose or os.getenv("S2K_DEBUG") else logging.INFO
-    logging.basicConfig(level=log_level, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    log_level = (
+        logging.DEBUG if args.verbose or os.getenv("S2K_DEBUG") else logging.INFO
+    )
+    logging.basicConfig(
+        level=log_level, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
 
     config = load_config(args)
-    
+
     agent = Spool2Klipper(
         moonraker_url=config["moonraker_url"],
         spoolman_url=config["spoolman_url"],
         klipper_spool_set_macro_prefix=config["klipper_spool_set_macro_prefix"],
         klipper_spool_clear_macro=config["klipper_spool_clear_macro"],
-        klipper_spool_done=config["klipper_spool_done"]
+        klipper_spool_done=config["klipper_spool_done"],
     )
     agent.run()
+
 
 if __name__ == "__main__":
     main()

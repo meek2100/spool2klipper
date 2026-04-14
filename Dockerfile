@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2026 Sebastian Andersson <sebastian@bittr.nu>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-FROM python:3.11-slim
+FROM python:3.14-slim
 
 ARG USER_UID=1000
 ARG USER_GID=1000
