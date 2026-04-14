@@ -14,8 +14,8 @@ A program that transfers info about Spoolman's data about the active Spool/Filam
 [Klipper](https://www.klipper3d.org/).
 
 The program is a [Moonraker](https://github.com/Arksine/moonraker) agent that listens for notifications
-about changed spools. When the spool is changed, it asks spoolman about the changed spool's data
-and it asks Moonraker to run special gcode macros in Klipper for storing data about the new spool.
+about changed spools. When the spool is changed, it asks Spoolman (defaulting to port 8000) about the changed spool's data
+and it asks Moonraker to run special gcode macros in Klipper.
 
 ## Prepare for running spool2klipper:
 
@@ -104,7 +104,7 @@ to Moonraker's config file (moonraker.conf).
 
 *spool2klipper* can be integrated directly into [spoolman2slicer](https://github.com/bofh69/spoolman2slicer) as a plugin. This allows you to run both tools in a single process.
 
-To enable it, run `spoolman2slicer` with the `--with-s2k` flag or set the `S2S_WITH_S2K=true` environment variable. The host will automatically handle the lifecycle and configuration of this agent.
+To enable it, run `spoolman2slicer` with the `--with-s2k` flag or set the `SM2S_WITH_S2K=true` environment variable. The host will automatically handle the lifecycle and configuration of this agent.
 
 ## See also
 

@@ -13,7 +13,7 @@ import os
 import sys
 import toml
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 from .api import MoonrakerClient
 from .engine import KlipperEngine
@@ -55,8 +55,12 @@ def load_config(config_dir: Optional[str] = None) -> Dict[str, Any]:
 class Spool2Klipper:
     """Consolidated Spool2Klipper application for use as a standalone or plugin."""
 
-    def __init__(self, config: Dict[str, Any]):
-        self.config = config.get(PROGNAME, {})
+    def __init__(self, config: Optional[Union[str, Dict[str, Any]]] = None):
+        if isinstance(config, dict):
+            self.config = config.get(PROGNAME, config)
+        else:
+            self.config = load_config(config).get(PROGNAME, {})
+            
         self.moonraker: Optional[MoonrakerClient] = None
         self.spoolman: Optional[SpoolmanClient] = None
         self.engine: Optional[KlipperEngine] = None
