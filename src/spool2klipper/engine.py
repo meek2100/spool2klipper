@@ -46,7 +46,11 @@ class KlipperEngine:
 
         if spool_id is not None:
             try:
-                spool_data = self.spoolman.get_spool(int(spool_id))
+                # Spoolman calls are blocking, run in executor
+                import asyncio
+                spool_data = await asyncio.get_event_loop().run_in_executor(
+                    None, self.spoolman.get_spool, int(spool_id)
+                )
                 if not spool_data:
                     logger.warning(f"Spool ID {spool_id} not found in Spoolman, clearing Klipper.")
                     await self._clear_klipper()
